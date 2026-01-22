@@ -1,6 +1,3 @@
-Como compilar e executar
-⚠️ Terminal correto
-
 Este código foi compilado usando MSYS2 (UCRT64) no Windows.
 
 ❌ Não funciona direto no PowerShell
