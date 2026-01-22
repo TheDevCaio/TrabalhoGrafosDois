@@ -1,55 +1,20 @@
 #include <iostream>
-#include <vector>
+#include "grafo.h"
 
 using namespace std;
 
 int main() {
-    int n, m, d;
-    cin >> n >> m >> d;
+    int V, E;
+    cin >> V >> E;
 
-    vector<vector<int>> grafo(n);
+    Grafo* g = criaGrafo(V);
 
-    for (int i = 0; i < m; i++) {
+    for (int i = 0; i < E; i++) {
         int u, v;
         cin >> u >> v;
-        u--; v--;
-        grafo[u].push_back(v);
-        grafo[v].push_back(u);
+        adicionaAresta(g, u, v);
     }
 
-    vector<int> cor(n, -1);
-    int cores = 0;
-
-    for (int i = 0; i < n; i++) {
-        bool pintou = false;
-
-        for (int c = 0; c < cores; c++) {
-            int conflitos = 0;
-
-            for (int viz : grafo[i]) {
-                if (cor[viz] == c)
-                    conflitos++;
-            }
-
-            if (conflitos <= d) {
-                cor[i] = c;
-                pintou = true;
-                break;
-            }
-        }
-
-        if (!pintou) {
-            cor[i] = cores;
-            cores++;
-        }
-    }
-
-    cout << "Resultado da coloracao:\n";
-    for (int i = 0; i < n; i++) {
-        cout << "Vertice " << i + 1 << " -> cor " << cor[i] << "\n";
-    }
-
-    cout << "Total de cores usadas: " << cores << endl;
-
+    coloracaoGulosa(g);
     return 0;
 }

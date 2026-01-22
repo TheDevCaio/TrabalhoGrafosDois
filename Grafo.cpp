@@ -1,56 +1,72 @@
-#include "Grafo.h"
+#include <iostream>
+#include "grafo.h"
 
-Grafo* criarGrafo(int n) {
+using namespace std;
+
+No* criaNo(int v) {
+    No* novo = new No;
+    novo->vertice = v;
+    novo->prox = NULL;
+    return novo;
+}
+
+Grafo* criaGrafo(int V) {
     Grafo* g = new Grafo;
-    g->n = n;
-    g->adj = new No*[n];
+    g->V = V;
+    g->adj = new No*[V + 1];
 
-    for (int i = 0; i < n; i++)
-        g->adj[i] = nullptr;
+    for (int i = 1; i <= V; i++)
+        g->adj[i] = NULL;
 
     return g;
 }
 
-void adicionarAresta(Grafo* g, int u, int v) {
-    No* a = new No{v, g->adj[u]};
-    g->adj[u] = a;
+void adicionaAresta(Grafo* g, int u, int v) {
+    No* n1 = criaNo(v);
+    n1->prox = g->adj[u];
+    g->adj[u] = n1;
 
-    No* b = new No{u, g->adj[v]};
-    g->adj[v] = b;
+    No* n2 = criaNo(u);
+    n2->prox = g->adj[v];
+    g->adj[v] = n2;
 }
 
-int* coloracaoDDefectiva(Grafo* g, int d, int& totalCores) {
-    int* cor = new int[g->n];
-    for (int i = 0; i < g->n; i++)
+void coloracaoGulosa(Grafo* g) {
+    int* cor = new int[g->V + 1];
+    bool* usado = new bool[g->V + 1];
+
+    for (int i = 1; i <= g->V; i++)
         cor[i] = -1;
 
-    totalCores = 0;
+    cor[1] = 0;
 
-    for (int u = 0; u < g->n; u++) {
-        bool pintou = false;
+    for (int u = 2; u <= g->V; u++) {
+        for (int i = 0; i <= g->V; i++)
+            usado[i] = false;
 
-        for (int c = 0; c < totalCores; c++) {
-            int conflitos = 0;
-            No* p = g->adj[u];
-
-            while (p) {
-                if (cor[p->v] == c)
-                    conflitos++;
-                p = p->prox;
-            }
-
-            if (conflitos <= d) {
-                cor[u] = c;
-                pintou = true;
-                break;
-            }
+        No* temp = g->adj[u];
+        while (temp != NULL) {
+            int v = temp->vertice;
+            if (cor[v] != -1)
+                usado[cor[v]] = true;
+            temp = temp->prox;
         }
 
-        if (!pintou) {
-            cor[u] = totalCores;
-            totalCores++;
-        }
+        int c;
+        for (c = 0; c <= g->V; c++)
+            if (!usado[c]) break;
+
+        cor[u] = c;
     }
 
-    return cor;
+    int maxCor = 0;
+    cout << "Resultado da coloracao:\n";
+    for (int i = 1; i <= g->V; i++) {
+        cout << "Vertice " << i << " -> cor " << cor[i] << endl;
+        if (cor[i] > maxCor) maxCor = cor[i];
+    }
+    cout << "Total de cores usadas: " << maxCor + 1 << endl;
+
+    delete[] cor;
+    delete[] usado;
 }

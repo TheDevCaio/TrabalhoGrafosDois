@@ -2,17 +2,18 @@
 #define GRAFO_H
 
 struct No {
-    int v;
+    int vertice;
     No* prox;
 };
 
 struct Grafo {
-    int n;
+    int V;
     No** adj;
 };
 
-Grafo* criarGrafo(int n);
-void adicionarAresta(Grafo* g, int u, int v);
-int* coloracaoDDefectiva(Grafo* g, int d, int& totalCores);
+No* criaNo(int v);
+Grafo* criaGrafo(int V);
+void adicionaAresta(Grafo* g, int u, int v);
+void coloracaoGulosa(Grafo* g);
 
 #endif
